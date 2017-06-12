@@ -1,0 +1,23 @@
+version: '2'
+services:
+
+  mongo_backup:
+    build: .
+    mem_limit: 50M
+    cpu_quota: 50000
+    environment:
+      REMOTE_URL: ''
+      PARAMS: ''
+      MONGO_DUMP_PARAMS: ''
+      MONGO_RESTORE_PARAMS: ''
+      BACKUP_LIFETIME: ''
+      BACKUP_TIME: ''
+      AWS_ACCESS_KEY_ID: ''
+      AWS_SECRET_ACCESS_KEY: ''
+    volumes:
+      - ./cache:/root/.cache/duplicity
+    links:
+      - db:mongo
+
+  db:
+    image: mongo:3.2

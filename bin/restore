@@ -1,0 +1,14 @@
+#!/bin/sh
+
+duplicity restore $@ \
+    --force \
+    --no-encryption \
+    ${REMOTE_URL} \
+    /tmp/backup
+
+mongorestore -h mongo ${MONGO_RESTORE_PARAMS} /tmp/backup
+
+echo "=== Removing backups from local disk ==="
+rm -rf /tmp/backup
+
+echo "=== Done ==="
