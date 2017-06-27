@@ -31,12 +31,12 @@ docker-compose up -d
 
 Additional scripts are provided to make it easier to manually invoke backups.
 ```
-docker exec -it myfilebackup backup
-docker exec -it myfilebackup status
-docker exec -it myfilebackup restore
+docker exec -it mymongobackup backup
+docker exec -it mymongobackup status
+docker exec -it mymongobackup restore
 ```
 
 You can restore backup to specified time. More info [here](http://duplicity.nongnu.org/duplicity.1.html#sect8).
 ```
-docker exec -it myfilebackup restore -t 1D
+docker exec -it mymongobackup restore -t 1D
 ```
