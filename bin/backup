@@ -3,24 +3,22 @@
 DB_BACKUP_DIR=/tmp/backup_db_`date '+%Y%m%dT%H%M'`
 
 echo "=== Creating database dump ==="
-mongodump -h mongo ${MONGO_DUMP_PARAMS} --out ${DB_BACKUP_DIR}
-
-rm -f /root/.cache/duplicity/*/*.lock
+mongodump -h mongo ${MONGO_DUMP_PARAMS} --out ${DB_BACKUP_DIR} || BACKUP_ERROR=1
 
 echo '=== Duplicity backup ==='
 duplicity $@ ${PARAMS} \
   --allow-source-mismatch \
   --no-encryption \
   ${DB_BACKUP_DIR} \
-  ${REMOTE_URL}
+  ${REMOTE_URL} || BACKUP_ERROR=1
 
 if [ ! -z "$BACKUP_LIFETIME" ]; then
   echo '=== Removing old backups ==='
-  duplicity remove-older-than ${BACKUP_LIFETIME} --force ${REMOTE_URL}
+  duplicity remove-older-than ${BACKUP_LIFETIME} --force ${REMOTE_URL} || BACKUP_ERROR=1
 fi
 
 echo '=== Cleanup ==='
-duplicity cleanup --no-encryption --force ${REMOTE_URL}
+duplicity cleanup --no-encryption --force ${REMOTE_URL} || BACKUP_ERROR=1
 
 echo "=== Removing backups from local disk ==="
 rm -rf ${DB_BACKUP_DIR}
